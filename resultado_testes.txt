@@ -1,0 +1,140 @@
+Preparando ambiente de teste...
+  MySQL:    OK (banco cp3_teste)
+  MongoDB:  OK (banco cp3_teste)
+  NVD:      NVD inacessível (ProxyError)
+  GitHub:   GitHub respondeu HTTP 403
+  ipinfo:   ipinfo inacessível (ProxyError)
+  OpenAI:   sem chave (só modo simulado)
+
+=== Aula 1 — SQL e CAP ===
+  [  OK  ] 1.1 schema roda sem erro e SRV-WEB01 tem CVE-2024-001 (Alta, 8.5)
+  [  OK  ] 1.2 (b) lista só severidade 'alta' (2 alertas)
+  [  OK  ] 1.2 (d) contagem: critica 1 | alta 2 | media 1
+  [  OK  ] 1.2 (e) apagou o alerta com mais de 90 dias (restam 3)
+  [  OK  ] 1.3 decisoes_cap.md bate com o gabarito (CP, AP, AP, CP, AP)
+
+=== Aula 2 — MongoDB ===
+  [  OK  ] 2.2 top IPs 10/5/3 falhas e 23 eventos inseridos
+  [  OK  ] 2.2 documentos realmente gravados no MongoDB (23)
+  [  OK  ] 2.1 cadastrar SRV-DB01 -> 'Ativo cadastrado!'
+  [  OK  ] 2.1 IP duplicado -> 'Erro: IP já cadastrado!'
+  [  OK  ] 2.1 buscar 192.168.1.45 -> PC-RH03
+  [  OK  ] 2.1 atualizar status -> 'Status atualizado!'
+  [  OK  ] 2.1 listar -> 4 ativos, SW-CORE01 agora ativo
+  [  OK  ] 2.3 consultar(tipo='FAIL', ip='185.220.101.1') -> 10
+  [  OK  ] 2.3 consultar(fonte='auth') -> 23
+  [  OK  ] 2.3 filtro por data (desde) funciona
+
+=== Aula 3 — MySQL ===
+  [  OK  ] 3.1 email duplicado -> 'Erro: email já existe'
+  [  OK  ] 3.1 nível 9 é rejeitado
+  [  OK  ] 3.1 buscar ana@empresa.com -> nível 5
+  [  OK  ] 3.1 promover Bruno -> 'Nível atualizado!'
+  [  OK  ] 3.1 listar: Carlos 3, Ana 5, Bruno 4
+  [  OK  ] 3.1 nenhuma query concatena entrada (sem f-string/format/+ em execute)
+  [  OK  ] 3.2 [INSEGURO] retorna 3 usuários (vazamento demonstrado)
+  [  OK  ] 3.2 [SEGURO] retorna 0 usuários (defesa OK)
+  [  OK  ] 3.3 por severidade: critica 3 | alta 4 | media 2 | baixa 1
+  [  OK  ] 3.3 por tipo: BRUTE_FORCE 4 | PORT_SCAN 3 | XSS 2 | SQLI 1
+  [  OK  ] 3.3 top IPs: 185.220.101.1 -> 4, 45.33.32.156 -> 3
+
+=== Aula 4 — Machine Learning ===
+  [  OK  ] 4.1 métricas impressas (acurácia, precisão, recall, F1)
+  [  OK  ] 4.1 caso novo [11,1,1,1,7] -> Phishing
+  [  OK  ] 4.2 amostras 5 e 8 marcadas como ANOMALIA
+  [  OK  ] 4.2 demais amostras normais (só 2 anomalias)
+  [  OK  ] 4.3 matriz [[8,0],[1,1]]
+  [  OK  ] 4.3 precisão 1.00 | recall 0.50 | F1 0.67 | acurácia 0.90
+
+=== Aula 6 — Flask (servidores reais + HTTP) ===
+  [  OK  ] 6.1 POST Ana -> 201 com objeto criado
+  [  OK  ] 6.1 POST email repetido -> 400 'email já existe'
+  [  OK  ] 6.1 POST nível 9 -> 400 'nível inválido'
+  [  OK  ] 6.1 GET /api/usuarios/1 -> 200 Ana
+  [  OK  ] 6.1 GET /api/usuarios/99 -> 404
+  [  OK  ] 6.1 PUT /api/usuarios/1 nivel 4 -> 200
+  [  OK  ] 6.1 DELETE /api/usuarios/1 -> 200 'Removido'
+  [  OK  ] 6.1 GET depois do DELETE -> 404
+  [  OK  ] 6.2 'Cyber@2024' -> 200 'Muito forte' com todos os critérios
+  [  OK  ] 6.2 senha fraca 'abc' -> não é 'Muito forte'
+  [  OK  ] 6.2 sem campo senha -> 400
+  [  OK  ] 6.2 corpo não-JSON -> 400
+  [  OK  ] 6.3 185.220.101.1 -> blacklist, público
+  [  OK  ] 6.3 192.168.1.10 -> fora da blacklist, privado
+  [  OK  ] 6.3 999.999.1.1 -> 400 'IP inválido'
+
+=== Aula 7 — Flask + bancos ===
+  [  OK  ] 7.1 POST incidente -> 201 com id
+  [  OK  ] 7.1 POST sem campos obrigatórios -> 400
+  [  OK  ] 7.1 POST severidade inválida -> 400
+  [  OK  ] 7.1 GET lista contém o incidente (_id serializado)
+  [  OK  ] 7.1 GET /<id_ruim> -> 400 'id inválido'
+  [  OK  ] 7.1 PUT status=resolvido -> 200
+  [  OK  ] 7.1 DELETE -> 200 'Removido'
+  [  OK  ] 7.1 GET depois do DELETE -> 404
+  [  OK  ] 7.2 tamanho=5&pagina=1 -> 5 mais recentes
+  [  OK  ] 7.2 pagina=2 traz os 5 seguintes (sem repetir)
+  [  OK  ] 7.2 severidade=critica -> só críticos (3)
+  [  OK  ] 7.2 status=aberto&tamanho=3 -> 3 abertos mais recentes
+  [  OK  ] 7.2 parâmetro inválido (tamanho=abc) -> 400
+  [  OK  ] 7.3 POST email já existente -> 409
+  [  OK  ] 7.3 GET /api/usuarios/999 -> 404
+  [  OK  ] 7.3 POST sem email -> 400
+  [  OK  ] 7.3 POST novo usuário -> 201
+  [  OK  ] 7.3 GET novo usuário -> 200
+  [  OK  ] 7.3 PUT nivel_acesso 3 -> 200
+  [  OK  ] 7.3 DELETE -> 200
+  [  OK  ] 7.3 MySQL fora do ar -> 500 'serviço indisponível' sem vazar detalhes
+
+=== Aula 8 — OWASP ===
+  [  OK  ] 8.1 payload NÃO aparece cru no HTML (não executa)
+  [  OK  ] 8.1 payload aparece escapado como texto
+  [  OK  ] 8.1 headers de segurança (CSP, X-Frame-Options, nosniff)
+  [  OK  ] 8.2 cria tabela 'contas' no MySQL
+  [  OK  ] 8.2 senha guardada como hash (não em texto puro)
+  [  OK  ] 8.2 senha errada -> 401 'Credenciais inválidas'
+  [  OK  ] 8.2 usuário inexistente -> mesmo 401
+  [  OK  ] 8.2 mensagens idênticas (sem user enumeration)
+  [  OK  ] 8.2 credenciais corretas -> 200 'Login OK'
+  [  OK  ] 8.2 campos vazios -> 400
+  [  OK  ] 8.2 limite de tentativas: 5x 401 e depois 429
+  [  OK  ] 8.2 SQL injection no usuário não entra
+  [  OK  ] 8.3 auditoria.md cobre as 5 falhas (A05 SQLi, A05 XSS, A02, A04, A09)
+
+=== Aula 10 — APIs REST ===
+  [  OK  ] 10.x teste offline (respostas simuladas) — NVD, GitHub, cache e backoff
+  [PULADO] 10.1 [internet] NVD real  (NVD inacessível (ProxyError))
+  [PULADO] 10.2 [internet] GitHub real  (GitHub respondeu HTTP 403)
+  [PULADO] 10.3 [internet] ipinfo real  (ipinfo inacessível (ProxyError))
+
+=== Aula 12 — scikit-learn avançado ===
+  [  OK  ] 12.1 validação cruzada 5 folds com média e desvio
+  [  OK  ] 12.1 5 scores (um por fold)
+  [  OK  ] 12.2 compara RandomForest, SVM e KNN e declara vencedor
+  [  OK  ] 12.2 GridSearch mostra melhores parâmetros
+  [  OK  ] 12.3 salva .pkl e mostra SHA-256 de 64 caracteres
+  [  OK  ] 12.3 hash confere e prevê [1]
+  [  OK  ] 12.3 arquivo adulterado -> ALERTA e não carrega
+  [  OK  ] 12.3 modelo adulterado NÃO é usado para prever
+
+=== Aula 13 — LLM ===
+  [  OK  ] 13.1 [simulado] responde e usa o contexto na 2ª pergunta
+  [  OK  ] 13.2 [simulado] NORMAL / CRITICO (path traversal) / SUSPEITO (brute force)
+  [  OK  ] 13.2 fallback por regras quando a API falha
+  [  OK  ] 13.3 injeção funciona no classificador ingênuo
+  [  OK  ] 13.3 classificador seguro resiste (SUSPEITO)
+  [  OK  ] 13.3 respostas fora do formato são rejeitadas
+  [PULADO] 13.x OpenAI real  (OPENAI_API_KEY não definida)
+
+======================================================================
+RESULTADO: 96 OK | 0 FALHOU | 4 PULADO   (38s)
+  Aula 1   5/5 OK
+  Aula 2   10/10 OK
+  Aula 3   11/11 OK
+  Aula 4   6/6 OK
+  Aula 6   15/15 OK
+  Aula 7   21/21 OK
+  Aula 8   13/13 OK
+  Aula 10  1/4 OK, 3 pulado
+  Aula 12  8/8 OK
+  Aula 13  6/7 OK, 1 pulado

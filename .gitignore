@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+*.pkl
+*.sha256
+github_*.json
